@@ -8,5 +8,5 @@ image:
 		-t $(IMAGE_PROD):$(GITSHA1) \
 		-t $(IMAGE_PROD):latest \
 		--push \
-		-f docker/Dockerfile.prod .
+		-f Dockerfile .
 	
