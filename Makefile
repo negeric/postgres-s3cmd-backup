@@ -10,3 +10,11 @@ image:
 		--push \
 		-f Dockerfile .
 	
+.PHONY: test
+test:
+	GITSHA1=$(GITSHA1) \
+		docker buildx build \
+		--platform linux/amd64 \
+		-t $(IMAGE_PROD):$(GITSHA1) \
+		-f Dockerfile .
+		
