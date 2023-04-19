@@ -57,11 +57,13 @@ spec:
                 secretKeyRef:
                   key: retention
                   name: psql-backups
+                  optional: true
             - name: ENCRYPT_BACKUPS
               valueFrom:
                 secretKeyRef:
                   key: enable-encryption
                   name: psql-backups
+                  optional: true
             - name: FOLDER_PER_DB
               value: "true"
             image: negeric/postgres-s3cmd-backup:latest
