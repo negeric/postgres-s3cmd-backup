@@ -1,0 +1,92 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app.kubernetes.io/instance: database-backup
+    app.kubernetes.io/name: database-backup
+  name: database-backup
+  namespace: db
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - env:
+            - name: BUCKET
+              valueFrom:
+                secretKeyRef:
+                  key: bucket
+                  name: psql-backups
+            - name: DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: databases
+                  name: psql-backups
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: backup-password
+                  name: psql-backups
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: backup-user
+                  name: psql-backups
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: db-host
+                  name: psql-backups
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: db-port
+                  name: psql-backups
+                  optional: true
+            - name: DB_USE_SSL
+              valueFrom:
+                secretKeyRef:
+                  key: use-ssl
+                  name: psql-backups
+                  optional: true
+            - name: DAYS_TO_KEEP
+              valueFrom:
+                secretKeyRef:
+                  key: retention
+                  name: psql-backups
+            - name: ENCRYPT_BACKUPS
+              valueFrom:
+                secretKeyRef:
+                  key: enable-encryption
+                  name: psql-backups
+            - name: FOLDER_PER_DB
+              value: "true"
+            image: negeric/postgres-s3cmd-backup:latest
+            imagePullPolicy: Always
+            name: postgres-s3-backup
+            resources: {}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /s3cmd
+              name: s3cmd-config
+            - mountPath: /etc/enc-key
+              name: enc-key
+          dnsPolicy: ClusterFirst
+          restartPolicy: Never
+          schedulerName: default-scheduler
+          securityContext: {}
+          terminationGracePeriodSeconds: 30
+          volumes:
+          - name: s3cmd-config
+            secret:
+              defaultMode: 420
+              secretName: s3cmd-config
+          - name: enc-key
+            secret:
+              defaultMode: 420
+              secretName: backup-encryption-key
+  schedule: 0 0 * * *
