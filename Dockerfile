@@ -9,5 +9,7 @@ RUN apk update \
     && apk add --update coreutils
 RUN apk add --no-cache py-pip ca-certificates && pip install s3cmd
 COPY entrypoint.sh /
+COPY retention-policy.sh /
 RUN chmod +x entrypoint.sh
+RUN chmod +x retention-policy.sh
 ENTRYPOINT ["./entrypoint.sh"]
