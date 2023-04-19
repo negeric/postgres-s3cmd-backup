@@ -1,2 +1,3 @@
 s3cmd
 s3cmd-secret.yaml
+.env
