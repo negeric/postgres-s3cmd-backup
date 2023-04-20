@@ -45,6 +45,7 @@ stringData:
   enable-encryption: ${TRUE_OR_FALSE}
   retention: ${STRING_RETENTION_DAYS}
   use-ssl: ${USE_SSL_TO_CONNECT_TO_DB|TRUE_OR_FALSE}
+  date-subfolders: ${TRUE_OR_FALSE}
 ```
 Replace the values above with your values
 
@@ -58,7 +59,8 @@ Replace the values above with your values
 |db-port|Port that postgres is running on|Integer|
 |enable-encryption|Encrypt backups with gpg.  Must have backup-encryption-key secret set|Bool (true\|false)|
 |retention|Number of days to keep backups.  Remove this value to keep backups forever|Integer|
-|use-ssl|Enable SSL on the postgresql connection|Bool (true\false)|
+|use-ssl|Enable SSL on the postgresql connection|Bool (true\|false)|
+|date-subfolders|Create folders YYYY/MM/DD for backups|Bool (true\|false)|
 
 ### S3CMD Config Secret
 This app will mount the secret `s3cmd-config` for the s3cmd tool to use.  This document will not cover the creation of API Tokens for S3.
