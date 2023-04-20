@@ -64,7 +64,7 @@ spec:
                   key: enable-encryption
                   name: psql-backups
                   optional: true
-            - name: DATE_SUB_FOLDERS
+            - name: DATE_SUBFOLDERS
               valueFrom:
                 secretKeyRef:
                   key: date-subfolders
