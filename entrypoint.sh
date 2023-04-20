@@ -45,17 +45,17 @@ else
     TIMESTAMP=$(date '+%F-%H%M%S')
     BACKUP_FILE="${DATABASE}_${TIMESTAMP}"
     pg_dump -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} ${DB} > ${BACKUP_FILE}
-    if [ "${FOLDER_PER_DB}" ]; then
+    if [ "${FOLDER_PER_DB+true}" = "true" ] && [ "${FOLDER_PER_DB}" = true ]; then
         S3_PATH="s3://${BUCKET}/${DB}"
     else
         S3_PATH="s3://${BUCKET}"
     fi
     if [ $? -eq 0 ]; then
-        if [ "${DATE_SUBFOLDERS+true}" = "true" ] && [ "${DATE_SUBFOLDERS}" == "true"]; then
+        if [ "${DATE_SUBFOLDERS+true}" = "true" ] && [ "${DATE_SUBFOLDERS}" = true ]; then
             S3_PATH="${S3_PATH}/$(date +'%Y')/$(date +'%m')/$(date +'%d')"
         fi
         tar -czvf ${BACKUP_FILE}.tar.gz $BACKUP_FILE
-        if [ ! -z "${ENCRYPT_BACKUPS}" ]; then
+        if [ "${ENCRYPT_BACKUPS+true}" = "true" ] && [ "${ENCRYPT_BACKUPS}" = true ]; then
             cat /etc/enc-key/key | gpg --passphrase-fd 0 --batch --quiet --yes -c -o ${BACKUP_FILE}.tar.gz.gpg ${BACKUP_FILE}.tar.gz      
             echo "$(date '+%F-%H%M%S') - Encrypted Database Backup (ok)"       
             s3cmd --config=/s3cmd/s3cmd put "${BACKUP_FILE}.tar.gz.gpg" ${S3_PATH}/${BACKUP_FILE}.tar.gz.gpg --no-mime-magic                
