@@ -51,6 +51,9 @@ else
         S3_PATH="s3://${BUCKET}"
     fi
     if [ $? -eq 0 ]; then
+        if [ "${DATE_SUBFOLDERS+true}" = "true" ] && [ "${DATE_SUBFOLDERS}" == "true"]; then
+            S3_PATH="${S3_PATH}/$(date +'%Y')/$(date +'%m')/$(date +'%d')"
+        fi
         tar -czvf ${BACKUP_FILE}.tar.gz $BACKUP_FILE
         if [ ! -z "${ENCRYPT_BACKUPS}" ]; then
             cat /etc/enc-key/key | gpg --passphrase-fd 0 --batch --quiet --yes -c -o ${BACKUP_FILE}.tar.gz.gpg ${BACKUP_FILE}.tar.gz      
