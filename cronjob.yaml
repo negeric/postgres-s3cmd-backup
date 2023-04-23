@@ -64,6 +64,12 @@ spec:
                   key: enable-encryption
                   name: psql-backups
                   optional: true
+            - name: DATE_SUBFOLDERS
+              valueFrom:
+                secretKeyRef:
+                  key: date-subfolders
+                  name: psql-backups
+                  optional: true
             - name: FOLDER_PER_DB
               value: "true"
             image: negeric/postgres-s3cmd-backup:latest
